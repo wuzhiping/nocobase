@@ -1,0 +1,53 @@
+version: "3"
+services:
+  app:
+    image: nocobase/nocobase:latest
+    environment:
+      - APP_PUBLIC_PATH=/nb/
+
+      - APP_KEY=your-secret-key # Replace it with your own app key
+      - DB_DIALECT=postgres
+      - DB_HOST=nbdb
+      - DB_DATABASE=nocobase
+      - DB_USER=nocobase
+      - DB_PASSWORD=nocobase
+    volumes:
+      - ./storage:/app/nocobase/storage
+    ports:
+      - "13000:80"
+    depends_on:
+      - nbdb
+    init: true
+
+  nbdb:
+    image: postgres:10
+    restart: always
+    command: postgres -c wal_level=logical
+    environment:
+      POSTGRES_USER: nocobase
+      POSTGRES_DB: nocobase
+      POSTGRES_PASSWORD: nocobase
+    volumes:
+      - ./storage/db/postgres:/var/lib/postgresql/data
+
+  hasura:
+    image: hasura/graphql-engine:v2.13.2
+    ports:
+      - "8880:8080"
+    depends_on:
+      - nbdb
+    restart: always
+    environment:
+      ## postgres database to store Hasura metadata
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://nocobase:nocobase@nbdb:5432/hasura
+      ## this env var can be used to add the above postgres database to Hasura as a data source. this can be removed/updated based on your needs
+      PG_DATABASE_URL: postgres://nocobase:nocobase@nbdb:5432/nocobase
+      ## enable the console served by server
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
+      ## enable debugging mode. It is recommended to disable this in production
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      ## uncomment next line to run console offline (i.e load console assets from server instead of CDN)
+      HASURA_GRAPHQL_CONSOLE_ASSETS_DIR: /srv/console-assets
+      ## uncomment next line to set an admin secret
+      HASURA_GRAPHQL_ADMIN_SECRET: hasuraPassw0rd
