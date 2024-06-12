@@ -11,3 +11,8 @@ span[data-testid="help-button"] { display:none; }
 abc
 
 ![X-App](x-app.png "API")
+
+
+# docker images 
+## docker save shawoo/mongo:4 > mongo.tar
+## docker load --input mongo.tar
