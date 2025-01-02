@@ -52,3 +52,31 @@ services:
       HASURA_GRAPHQL_CONSOLE_ASSETS_DIR: /srv/console-assets
       ## uncomment next line to set an admin secret
       HASURA_GRAPHQL_ADMIN_SECRET: hasuraPassw0rd
+      
+  n8n:
+    image: n8nio/n8n:1.71.3
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - EXECUTIONS_DATA_PRUNE=true
+      - EXECUTIONS_DATA_MAX_AGE=24
+      - EXECUTIONS_DATA_PRUNE_MAX_COUNT=2000
+
+      - N8N_SECURE_COOKIE=false
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=nbdb
+      - DB_POSTGRESDB_PORT=5432
+      
+      - DB_POSTGRESDB_DATABASE=n8n
+      
+      - DB_POSTGRESDB_USER=nocobase
+      - DB_POSTGRESDB_PASSWORD=nocobase
+      - GENERIC_TIMEZONE=Asia/Shanghai
+      - TZ=Asia/Shanghai
+    links:
+      - nbdb
+    depends_on:
+      - nbdb      
+    volumes:
+      - ./n8n:/home/node/.n8n
