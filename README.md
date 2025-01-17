@@ -1,5 +1,5 @@
 # nocobase
-https://cn.nocobase.com/
+[https://cn.nocobase.com/](https://www.nocobase.com/cn/blog/tags/release-notes)
 
 ## jwt
 delete from "tokenBlacklist" where token in ( select token from "apiKeys" );
