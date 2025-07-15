@@ -1,7 +1,7 @@
 version: "3"
 services:
   app:
-    image: registry.cn-shanghai.aliyuncs.com/nocobase/nocobase:1.6.24
+    image: registry.cn-shanghai.aliyuncs.com/nocobase/nocobase:1.8.5
     #image: nocobase/nocobase:latest
     environment:
       - APP_PUBLIC_PATH=/nb/
